@@ -51,7 +51,7 @@ module.exports = function (grunt) {
         // Staticfy the page with phantomjs
         exec(cmd, function () {
 
-            // 读取构建静态化完毕的 html 文件
+            // 读取静态化完毕的 html 文件
             var str = grunt.file.read(f.dest);
             str = grunt.util.normalizelf(str);
             str = options.onfinish(str);

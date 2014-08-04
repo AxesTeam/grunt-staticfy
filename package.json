@@ -3,21 +3,23 @@
     "description": "Staticfy your website",
     "version": "0.1.0",
     "homepage": "",
-    "author": {
-        "name": "Weilao",
-        "email": "qqq123026689@126.com"
-    },
+    "author": [
+        {
+            "name": "Weilao",
+            "email": "qqq123026689@126.com"
+        }
+    ],
     "repository": {
         "type": "git",
-        "url": "git://gitbub.com/weilao/grunt-staticfy.git"
+        "url": "git://gitbub.com/AxesTeam/grunt-staticfy.git"
     },
     "bugs": {
-        "url": ""
+        "url": "https://github.com/AxesTeam/grunt-staticfy/issues"
     },
     "licenses": [
         {
             "type": "MIT",
-            "url": "/blob/master/LICENSE-MIT"
+            "url": "/blob/master/LICENSE"
         }
     ],
     "engines": {
