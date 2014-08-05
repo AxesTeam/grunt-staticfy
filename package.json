@@ -1,52 +1,53 @@
 {
-  "name": "grunt-staticfy",
-  "description": "Staticfy your website",
-  "version": "0.2.0",
-  "homepage": "",
-  "author": "Weilao <qqq123026689@126.com> (https://github.com/weilao)",
-  "repository": {
-    "type": "git",
-    "url": "git://gitbub.com/AxesTeam/grunt-staticfy.git"
-  },
-  "bugs": {
-    "url": "https://github.com/AxesTeam/grunt-staticfy/issues"
-  },
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "/blob/master/LICENSE"
-    }
-  ],
-  "engines": {
-    "node": ">= 0.8.0"
-  },
-  "scripts": {
-    "test": "grunt test"
-  },
-  "devDependencies": {
-    "grunt": "~0.4.5",
-    "grunt-contrib-clean": "^0.5.0",
-    "grunt-contrib-jshint": "^0.9.2",
-    "grunt-contrib-nodeunit": "^0.3.3",
-    "node-static": "^0.7.4"
-  },
-  "peerDependencies": {
-    "grunt": "~0.4.4"
-  },
-  "keywords": [
-    "gruntplugin",
-    "staticfy",
-    "grunt-staticfy"
-  ],
-  "main": "Gruntfile.js",
-  "directories": {
-    "test": "test"
-  },
-  "dependencies": {
-    "grunt": "~0.4.5",
-    "grunt-contrib-jshint": "~0.9.2",
-    "grunt-contrib-nodeunit": "~0.3.3",
-    "grunt-contrib-clean": "~0.5.0"
-  },
-  "license": "MIT"
+    "name": "grunt-staticfy",
+    "description": "Staticfy your website",
+    "version": "0.2.0",
+    "homepage": "",
+    "author": "Weilao <qqq123026689@126.com> (https://github.com/weilao)",
+    "repository": {
+        "type": "git",
+        "url": "git://gitbub.com/AxesTeam/grunt-staticfy.git"
+    },
+    "bugs": {
+        "url": "https://github.com/AxesTeam/grunt-staticfy/issues"
+    },
+    "licenses": [
+        {
+            "type": "MIT",
+            "url": "/blob/master/LICENSE"
+        }
+    ],
+    "engines": {
+        "node": ">= 0.8.0"
+    },
+    "scripts": {
+        "test": "grunt test"
+    },
+    "devDependencies": {
+        "grunt": "~0.4.5",
+        "grunt-contrib-clean": "^0.5.0",
+        "grunt-contrib-jshint": "^0.9.2",
+        "grunt-contrib-nodeunit": "^0.3.3",
+        "node-static": "^0.7.4"
+    },
+    "peerDependencies": {
+        "grunt": "~0.4.4"
+    },
+    "keywords": [
+        "gruntplugin",
+        "staticfy",
+        "grunt-staticfy"
+    ],
+    "main": "Gruntfile.js",
+    "directories": {
+        "test": "test"
+    },
+    "dependencies": {
+        "grunt": "~0.4.5",
+        "grunt-contrib-jshint": "~0.9.2",
+        "grunt-contrib-nodeunit": "~0.3.3",
+        "grunt-contrib-clean": "~0.5.0",
+        "node-static": "^0.7.4"
+    },
+    "license": "MIT"
 }
