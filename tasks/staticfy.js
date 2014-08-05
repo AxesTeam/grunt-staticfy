@@ -8,14 +8,14 @@
 "use strict";
 
 module.exports = function (grunt) {
+    var SimpleServer = require('./simpleServer.js');
     var exec = require('child_process').exec;
 
     grunt.registerMultiTask('staticfy', 'Staticfy your website', function () {
-        // Tells Grunt that an async task is complete
-        var done = grunt.task.current.async();
         // Merge task-specific and/or target-specific options with these defaults.
         var options = this.options({
-            server_host: '',
+            server_host: 'http://localhost',
+            server_port: 8182,
             inject_script: function () {
 
             },
@@ -39,29 +39,40 @@ module.exports = function (grunt) {
             return;
         }
 
-        var pageUrl = options.server_host + filepath;
+        var arr = filepath.split('/');
+        var filename = arr.pop();
+        var wwwDir = arr.join('/');
+
+        grunt.log.writeln('filename:' + filename);
+        grunt.log.writeln('wwwDir:' + wwwDir);
+
+        // Run a server to server html files, we need a static server to avoid crossdomain.
+        var server = SimpleServer.start(wwwDir, options.server_port);
+
+        var pageUrl = options.server_host + ':' + options.server_port + '/' + filename;
 
         var cmd = 'phantomjs tasks/phantom/staticfy_url.js ' +
             pageUrl + ' ' +
             f.dest + ' "' +
             options.inject_script + '"';
 
-        grunt.log.writeln(cmd);
-
         // Staticfy the page with phantomjs
+        grunt.log.writeln(cmd);
         exec(cmd, function () {
-
-            // 读取静态化完毕的 html 文件
+            // After phantom, read the dest html file normalizelf and make some changes
             var str = grunt.file.read(f.dest);
             str = grunt.util.normalizelf(str);
             str = options.onfinish(str);
 
-            // 重新输出 html 文件
+            // Write the result
             grunt.file.write(f.dest, str);
             grunt.log.writeln('File "' + f.dest + '" created.');
 
-            // 告诉 grunt 任务执行完毕
-            done();
+            // Tells Grunt that an async task is complete
+            grunt.task.current.async();
+
+            // Close the static Server
+            server.close();
         });
     });
 };

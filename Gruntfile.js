@@ -29,7 +29,9 @@ module.exports = function (grunt) {
         },
 
         // Configuration to be run (and then tested).
-        staticfy: {
+        staticfy: {options:{
+
+        },
             staticfy_simple_page: {
                 files: {
                     'tmp/simple.html': ['test/fixtures/simple.html']
