@@ -10,12 +10,14 @@
 module.exports = function (grunt) {
     var SimpleServer = require('./simpleServer.js');
     var exec = require('child_process').exec;
+    var path = require('path');
 
     grunt.registerMultiTask('staticfy', 'Staticfy your website', function () {
+        var done = grunt.task.current.async();
         // Merge task-specific and/or target-specific options with these defaults.
         var options = this.options({
             server_host: 'http://localhost',
-            server_port: 8182,
+            server_port: 8481,
             inject_script: function () {
 
             },
@@ -50,8 +52,9 @@ module.exports = function (grunt) {
         var server = SimpleServer.start(wwwDir, options.server_port);
 
         var pageUrl = options.server_host + ':' + options.server_port + '/' + filename;
-
-        var cmd = 'phantomjs tasks/phantom/staticfy_url.js ' +
+        var staticfy_url_js = path.join(path.dirname(module.filename), '/phantom/staticfy_url.js');
+        var cmd = 'phantomjs "' +
+            staticfy_url_js + '" ' +
             pageUrl + ' ' +
             f.dest + ' "' +
             options.inject_script + '"';
@@ -69,8 +72,7 @@ module.exports = function (grunt) {
             grunt.log.writeln('File "' + f.dest + '" created.');
 
             // Tells Grunt that an async task is complete
-            grunt.task.current.async();
-
+            done();
             // Close the static Server
             server.close();
         });
