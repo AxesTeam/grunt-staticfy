@@ -29,9 +29,7 @@ module.exports = function (grunt) {
         },
 
         // Configuration to be run (and then tested).
-        staticfy: {options:{
-
-        },
+        staticfy: {
             staticfy_simple_page: {
                 files: {
                     'tmp/simple.html': ['test/fixtures/simple.html']
@@ -42,14 +40,22 @@ module.exports = function (grunt) {
                     'tmp/simple2.html': ['test/fixtures/simple2.html']
                 }
             },
-            option_inject_script: {
+            option_inject_script_function: {
                 options: {
                     inject_script: function () {
                         document.body.innerHTML = 'this line is made by inject script';
                     }
                 },
                 files: {
-                    'tmp/inject_script.html': ['test/fixtures/test.html']
+                    'tmp/inject_script_function.html': ['test/fixtures/test.html']
+                }
+            },
+            option_inject_script_string: {
+                options: {
+                    inject_script: "document.body.innerHTML = 'this line is made by inject script'"
+                },
+                files: {
+                    'tmp/inject_script_string.html': ['test/fixtures/test.html']
                 }
             },
             option_on_finish: {
@@ -69,21 +75,21 @@ module.exports = function (grunt) {
         nodeunit: {
             tests: ['test/*_test.js']
         }
-
     });
 
-    // Actually load this plugin's task(s).
+// Actually load this plugin's task(s).
     grunt.loadTasks('tasks');
 
-    // These plugins provide necessary tasks.
+// These plugins provide necessary tasks.
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-nodeunit');
 
-    // Whenever the "test" task is run, first clean the "tmp" dir, then run this
-    // plugin's task(s), then test the result.
+// Whenever the "test" task is run, first clean the "tmp" dir, then run this
+// plugin's task(s), then test the result.
     grunt.registerTask('test', ['clean', 'staticfy', 'nodeunit']);
 
-    // By default, lint and run all tests.
+// By default, lint and run all tests.
     grunt.registerTask('default', ['test']);
-};
+}
+;

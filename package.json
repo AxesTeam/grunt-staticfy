@@ -1,7 +1,7 @@
 {
     "name": "grunt-staticfy",
     "description": "Staticfy your website",
-    "version": "0.2.2",
+    "version": "0.2.3",
     "homepage": "",
     "author": "Weilao <qqq123026689@126.com> (https://github.com/weilao)",
     "repository": {

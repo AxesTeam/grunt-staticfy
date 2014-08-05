@@ -27,10 +27,12 @@ module.exports = function (grunt) {
         });
 
         // Convert to string, it would be used by phantomjs later.
-        options.inject_script = options.inject_script
-            .toString()
-            .replace(/(function \(\) \{([\w\W]*?)\})/, "$2")
-            .trim();
+        if (grunt.util.kindOf(options.inject_script) === 'function') {
+            options.inject_script = options.inject_script
+                .toString()
+                .replace(/(function \(\) \{([\w\W]*?)\})/, "$2")
+                .trim();
+        }
 
         var f = this.files[0];
         var filepath = f.src[0];

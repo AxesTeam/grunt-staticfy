@@ -51,12 +51,23 @@ exports.staticfy = {
     },
 
     // 测试 inject_script 配置项
-    option_inject_script: function (test) {
+    option_inject_script_function: function (test) {
         test.expect(1);
 
-        var actual = grunt.file.read('tmp/inject_script.html');
+        var actual = grunt.file.read('tmp/inject_script_function.html');
         var expected = grunt.file.read('test/expected/inject_script.html');
-        test.equal(actual, expected, 'inject_script option fail');
+        test.equal(actual, expected, 'inject_script(function) option fail');
+
+        test.done();
+    },
+
+    // 测试 inject_script 配置项为字符串的情况
+    option_inject_script_string: function (test) {
+        test.expect(1);
+
+        var actual = grunt.file.read('tmp/inject_script_string.html');
+        var expected = grunt.file.read('test/expected/inject_script.html');
+        test.equal(actual, expected, 'inject_script(string) option fail');
 
         test.done();
     },
