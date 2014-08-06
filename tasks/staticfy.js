@@ -25,6 +25,8 @@ module.exports = function (grunt) {
                 return str;
             }
         });
+        var host = options.server_host;
+        var port = options.server_port;
 
         // Convert to string, it would be used by phantomjs later.
         if (grunt.util.kindOf(options.inject_script) === 'function') {
@@ -34,44 +36,43 @@ module.exports = function (grunt) {
                 .trim();
         }
 
-        var f = this.files[0];
-        var filepath = f.src[0];
+        var file = this.files[0];
+        var fileSrc = file.src[0];
+        var fileBasename = path.basename(fileSrc);
+        var wwwDir = path.dirname(fileSrc);
+        grunt.log.writeln('fileBasename:' + fileBasename);
+        grunt.log.writeln('wwwDir:' + wwwDir);
 
-        if (!grunt.file.exists(filepath)) {
+        if (!grunt.file.exists(fileSrc)) {
             // File not exist
-            grunt.log.warn('Source file "' + filepath + '" not found.');
+            grunt.log.warn('Source file "' + fileSrc + '" not found.');
             return;
         }
 
-        var arr = filepath.split('/');
-        var filename = arr.pop();
-        var wwwDir = arr.join('/');
+        // Run a server to serve html files, we need a static server so we
+        // wouldn't got a crossdomain error if the page use ajax or etc.
+        var server = SimpleServer.start(wwwDir, port);
 
-        grunt.log.writeln('filename:' + filename);
-        grunt.log.writeln('wwwDir:' + wwwDir);
+        var url = path.join(host + ':' + port, fileBasename);
+        var phantomProgram = path.join(__dirname, '/phantom/staticfy_url.js');
 
-        // Run a server to server html files, we need a static server to avoid crossdomain.
-        var server = SimpleServer.start(wwwDir, options.server_port);
-
-        var pageUrl = options.server_host + ':' + options.server_port + '/' + filename;
-        var staticfy_url_js = path.join(path.dirname(module.filename), '/phantom/staticfy_url.js');
         var cmd = 'phantomjs "' +
-            staticfy_url_js + '" ' +
-            pageUrl + ' ' +
-            f.dest + ' "' +
+            phantomProgram + '" ' +
+            url + ' ' +
+            file.dest + ' "' +
             options.inject_script + '"';
 
-        // Staticfy the page with phantomjs
+        // Staticfy the page using phantomjs.
         grunt.log.writeln(cmd);
         exec(cmd, function () {
-            // After phantom, read the dest html file normalizelf and make some changes
-            var str = grunt.file.read(f.dest);
+            // After phantom, read the dest html file then normalizelf and make some changes.
+            var str = grunt.file.read(file.dest);
             str = grunt.util.normalizelf(str);
             str = options.onfinish(str);
 
             // Write the result
-            grunt.file.write(f.dest, str);
-            grunt.log.writeln('File "' + f.dest + '" created.');
+            grunt.file.write(file.dest, str);
+            grunt.log.writeln('File "' + file.dest + '" created.');
 
             // Tells Grunt that an async task is complete
             done();
