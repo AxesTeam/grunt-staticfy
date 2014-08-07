@@ -58,14 +58,14 @@ grunt.initConfig({
 	staticfy: {
 		staticfy_simple_page: {
 		    files: {
-		        'tmp/simple.html': ['test/fixtures/simple.html']
+		        'dest.html': ['original.html']
 		    }
 		}
 	}
 });
 ```
 
-**Original html**
+Here is the a html with script:
 
 ```html
 <!DOCTYPE html>
@@ -82,7 +82,7 @@ grunt.initConfig({
 </html>
 ```
 
-**Compiled html**
+The script on page `document.writeln('success');` would be executed and the compiled page is:
 
 ```html
 <!DOCTYPE html>
@@ -104,7 +104,7 @@ success
 
 **option.inject_script**
 
-Once the page is loaded, the inject script would be evaluate.
+Once the page is loaded, the inject script would be executed.
 
 ```js
 grunt.initConfig({
@@ -116,14 +116,14 @@ grunt.initConfig({
 		        }
 		    },
 		    files: {
-		        'tmp/inject_script.html': ['test/fixtures/test.html']
+		        'dest.html': ['original.html']
 		    }
 		}
 	}
 });
 ```
 
-**Original html**
+This is the original html, no script on page.
 
 ```html
 <!DOCTYPE html>
@@ -138,7 +138,7 @@ original text
 </html>
 ```
 
-**Compiled html**
+The inject script `document.body.innerHTML = 'this line is made by inject script';` would be executed, so the compiled html is:
 
 ```html
 <!DOCTYPE html>
@@ -166,14 +166,14 @@ grunt.initConfig({
             }
         },
         files: {
-            'tmp/onfinish.html': 'test/fixtures/comment.html'
+	        'dest.html': ['original.html']
         }
     }
   }
 });
 ```
 
-**Original html**
+Original html
 
 ```html
 <!DOCTYPE html>
@@ -191,7 +191,7 @@ this will not be remove
 </html>
 ```
 
-**Compiled html**
+Compiled html
 
 ```html
 <!DOCTYPE html>
