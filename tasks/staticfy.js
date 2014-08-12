@@ -23,10 +23,9 @@ module.exports = function (grunt) {
             },
             onfinish: function (str) {
                 return str;
-            }
+            },
+            wait_request: ' '
         });
-        var host = options.server_host;
-        var port = options.server_port;
 
         // Convert to string, it would be used by phantomjs later.
         if (grunt.util.kindOf(options.inject_script) === 'function') {
@@ -51,20 +50,10 @@ module.exports = function (grunt) {
 
         // Run a server to serve html files, we need a static server so we
         // wouldn't got a crossdomain error if the page use ajax or etc.
-        var server = SimpleServer.start(wwwDir, port);
+        var server = SimpleServer.start(wwwDir, options.server_port);
 
-        var url = path.join(host + ':' + port, fileBasename);
-        var phantomProgram = path.join(__dirname, '/phantom/staticfy_url.js');
-
-        var cmd = 'phantomjs "' +
-            phantomProgram + '" ' +
-            url + ' ' +
-            file.dest + ' "' +
-            options.inject_script + '"';
-
-        // Staticfy the page using phantomjs.
-        grunt.log.writeln(cmd);
-        exec(cmd, function () {
+        var url = options.server_host + ':' + options.server_port + '/' + fileBasename;
+        phantom(url, file.dest, options.inject_script, options.wait_request, function () {
             // After phantom, read the dest html file then normalizelf and make some changes.
             var str = grunt.file.read(file.dest);
             str = grunt.util.normalizelf(str);
@@ -80,4 +69,13 @@ module.exports = function (grunt) {
             server.close();
         });
     });
+
+    // Staticfy the page using phantomjs.
+    function phantom(url, dest, inject_script, wait_request, callback) {
+        var phantomProgram = path.join(__dirname, '/phantom/staticfy_url.js');
+        var cmd = 'phantomjs "' + phantomProgram + '" ' + url +
+            ' ' + dest + ' "' + inject_script + '" ' + wait_request;
+        exec(cmd, callback);
+        grunt.log.writeln(cmd);
+    }
 };

@@ -82,4 +82,15 @@ exports.staticfy = {
 
         test.done();
     },
+
+    // 测试异步配置项
+    option_wait_request: function (test) {
+        test.expect(1);
+
+        var actual = grunt.file.read('tmp/async.html');
+        var expected = grunt.file.read('test/expected/async.html');
+        test.equal(actual, expected, 'wait_request option fail');
+
+        test.done();
+    },
 };

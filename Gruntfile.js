@@ -68,6 +68,14 @@ module.exports = function (grunt) {
                 files: {
                     'tmp/onfinish.html': 'test/fixtures/comment.html'
                 }
+            },
+            async: {
+                options:{
+                    wait_request:'http://localhost:8481/resource/test.txt'
+                },
+                files: {
+                    'tmp/async.html': 'test/fixtures/async.html'
+                }
             }
         },
 
