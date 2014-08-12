@@ -28,7 +28,7 @@ page.onConsoleMessage = function (msg) {
 };
 
 page.onResourceReceived = function (response) {
-    if (response.stage === 'end' && response.url === wait_request) {
+    if (response.stage === 'end' && response.url.indexOf(wait_request) > -1) {
         writeFile();
     }
 };
