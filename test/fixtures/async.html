@@ -7,7 +7,7 @@
 <body>
 <script type="text/javascript">
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", './resource/test.txt', true);
+    xhr.open("GET", './resource/async.txt', true);
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status === 200) {
             document.getElementById('response').innerText = xhr.responseText;

@@ -71,7 +71,7 @@ module.exports = function (grunt) {
             },
             async: {
                 options:{
-                    wait_request:'http://localhost:8481/resource/test.txt'
+                    wait_request:'http://localhost:8481/resource/async.txt'
                 },
                 files: {
                     'tmp/async.html': 'test/fixtures/async.html'
