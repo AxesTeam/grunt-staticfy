@@ -9,7 +9,7 @@ If you haven't used [Grunt](http://gruntjs.com/) before, be sure to check out th
 
 ```shell
 npm install grunt-staticfy --save-dev
-```
+``` 
 
 Once the plugin has been installed, it may be enabled inside your Gruntfile with this line of JavaScript:
 
@@ -65,7 +65,7 @@ grunt.initConfig({
 });
 ```
 
-Here is the a html with script:
+    Here is the a html with script:
 
 ```html
 <!DOCTYPE html>
