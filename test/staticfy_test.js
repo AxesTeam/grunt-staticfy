@@ -93,4 +93,18 @@ exports.staticfy = {
 
         test.done();
     },
+
+    multi_file: function (test) {
+        test.expect(2);
+
+        var actual = grunt.file.read('tmp/multi_file1.html');
+        var expected = grunt.file.read('test/expected/multi_file1.html');
+        test.equal(actual, expected, 'multi_file1 fail');
+
+        var actual2 = grunt.file.read('tmp/multi_file2.html');
+        var expected2 = grunt.file.read('test/expected/multi_file2.html');
+        test.equal(actual2, expected2, 'multi_file2 fail');
+
+        test.done();
+    }
 };

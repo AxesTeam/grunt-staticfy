@@ -76,6 +76,12 @@ module.exports = function (grunt) {
                 files: {
                     'tmp/async.html': 'test/fixtures/async.html'
                 }
+            },
+            multi_file:{
+                files:{
+                    'tmp/multi_file1.html': ['test/fixtures/simple.html'],
+                    'tmp/multi_file2.html': ['test/fixtures/simple2.html']
+                }
             }
         },
 
