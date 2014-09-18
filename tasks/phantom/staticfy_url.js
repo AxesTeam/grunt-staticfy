@@ -13,7 +13,7 @@ console.log('dest:', dest);
 console.log('eval:', inject_script);
 console.log('wait_request:', wait_request);
 
-page.open(src, function (s) {
+page.open(src, function () {
     if (inject_script !== 'no') {
         page.evaluate(function (evalStr) {
             eval(evalStr);
@@ -29,7 +29,7 @@ page.onConsoleMessage = function (msg) {
 
 page.onResourceReceived = function (response) {
     if (response.stage === 'end' && wait_request != 'no' && response.url.indexOf(wait_request) > -1) {
-        // timeout 0 for execute page script
+        // timeout 0 for execute page script render the page
         setTimeout(function () {
             writeFile();
         }, 0);
