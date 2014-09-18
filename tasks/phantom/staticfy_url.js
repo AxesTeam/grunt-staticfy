@@ -5,8 +5,8 @@ var args = system.args;
 
 var src = args[1];
 var dest = args[2];
-var inject_script = args[3] || ';';
-var wait_request = args[4] || '';
+var inject_script = args[3] || 'no';
+var wait_request = args[4] || 'no';
 
 console.log('src:', src);
 console.log('dest:', dest);
@@ -14,12 +14,12 @@ console.log('eval:', inject_script);
 console.log('wait_request:', wait_request);
 
 page.open(src, function (s) {
-    if (inject_script !== ';') {
+    if (inject_script !== 'no') {
         page.evaluate(function (evalStr) {
             eval(evalStr);
         }, inject_script);
     }
-    if (!wait_request) writeFile();
+    if (wait_request == 'no') writeFile();
 });
 
 // 输出页面 console 内容
@@ -28,15 +28,16 @@ page.onConsoleMessage = function (msg) {
 };
 
 page.onResourceReceived = function (response) {
-    if (response.stage === 'end' && response.url.indexOf(wait_request) > -1) {
-        writeFile();
+    if (response.stage === 'end' && wait_request != 'no' && response.url.indexOf(wait_request) > -1) {
+        // timeout 0 for execute page script
+        setTimeout(function () {
+            writeFile();
+        }, 0);
     }
 };
 
 function writeFile() {
-    setTimeout(function () {
-        fs.write(dest, page.content, 'w');
-        console.log('phantom.exit');
-        phantom.exit();
-    }, 0);
+    fs.write(dest, page.content, 'w');
+    console.log('phantom.exit');
+    phantom.exit();
 }
