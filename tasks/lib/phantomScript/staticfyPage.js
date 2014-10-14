@@ -34,6 +34,7 @@ page.onResourceReceived = function (response) {
             writeFile();
         }, 0);
     }
+    console.log('onResourceReceived');
 };
 
 function writeFile() {
