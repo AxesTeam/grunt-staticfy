@@ -21,6 +21,7 @@ module.exports = function (grunt) {
             server_host: 'http://localhost',
             server_port: 8481,
             query_string: '',
+            cwd: '',
             inject_script: function () {
 
             },
@@ -42,9 +43,9 @@ module.exports = function (grunt) {
         _.each(this.files, function (file) {
             q.push(function (callback) {
                 var fileSrc = file.src[0];
-                var fileBasename = path.basename(fileSrc);
-                var wwwDir = path.dirname(fileSrc);
-                grunt.log.writeln('fileBasename:' + fileBasename);
+                var wwwDir = options.cwd || path.dirname(fileSrc);
+                var fileBasePath = fileSrc.replace(wwwDir + '/', '');
+                grunt.log.writeln('fileBasePath:' + fileBasePath);
                 grunt.log.writeln('wwwDir:' + wwwDir);
 
                 if (!grunt.file.exists(fileSrc)) {
@@ -58,8 +59,10 @@ module.exports = function (grunt) {
                 var server = SimpleServer.start(wwwDir, options.server_port);
 
                 var url = options.server_host + ':' + options.server_port
-                    + '/' + fileBasename + '?' + options.query_string;
+                    + '/' + fileBasePath + '?' + options.query_string;
+
                 phantom(url, file.dest, options.inject_script, options.wait_request, function () {
+
                     // After phantom, read the dest html file then normalizelf and make some changes.
                     var str = grunt.file.read(file.dest);
                     str = grunt.util.normalizelf(str);
@@ -71,6 +74,7 @@ module.exports = function (grunt) {
 
                     // Tells Grunt that an async task is complete
                     gruntDone();
+
                     // Close the static Server
                     server.close();
                     callback();

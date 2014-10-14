@@ -90,6 +90,15 @@ module.exports = function (grunt) {
                 files: {
                     'tmp/query_string.html': 'test/fixtures/query_string.html'
                 }
+            },
+
+            html_in_sub_folder: {
+                options: {
+                    cwd: 'test/fixtures'
+                },
+                files: {
+                    'tmp/sub/hello.html': 'test/fixtures/sub/hello.html'
+                }
             }
         },
 

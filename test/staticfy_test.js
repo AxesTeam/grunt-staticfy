@@ -116,5 +116,15 @@ exports.staticfy = {
         test.equal(actual, expected, 'query_string fail');
 
         test.done();
+    },
+
+    html_in_sub_folder: function (test) {
+        test.expect(1);
+
+        var actual = grunt.file.read('tmp/sub/hello.html');
+        var expected = grunt.file.read('test/expected/sub/hello.html');
+        test.equal(actual, expected, 'html_in_sub_folder fail');
+
+        test.done();
     }
 };
