@@ -106,5 +106,15 @@ exports.staticfy = {
         test.equal(actual2, expected2, 'multi_file2 fail');
 
         test.done();
+    },
+
+    query_string: function (test) {
+        test.expect(1);
+
+        var actual = grunt.file.read('tmp/query_string.html');
+        var expected = grunt.file.read('test/expected/query_string.html');
+        test.equal(actual, expected, 'query_string fail');
+
+        test.done();
     }
 };

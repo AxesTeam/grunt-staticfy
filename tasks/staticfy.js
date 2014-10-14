@@ -20,6 +20,7 @@ module.exports = function (grunt) {
         var options = this.options({
             server_host: 'http://localhost',
             server_port: 8481,
+            query_string: '',
             inject_script: function () {
 
             },
@@ -56,7 +57,8 @@ module.exports = function (grunt) {
                 // wouldn't got a crossdomain error if the page use ajax or etc.
                 var server = SimpleServer.start(wwwDir, options.server_port);
 
-                var url = options.server_host + ':' + options.server_port + '/' + fileBasename;
+                var url = options.server_host + ':' + options.server_port
+                    + '/' + fileBasename + '?' + options.query_string;
                 phantom(url, file.dest, options.inject_script, options.wait_request, function () {
                     // After phantom, read the dest html file then normalizelf and make some changes.
                     var str = grunt.file.read(file.dest);

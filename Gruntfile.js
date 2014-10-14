@@ -70,17 +70,25 @@ module.exports = function (grunt) {
                 }
             },
             async: {
-                options:{
-                    wait_request:'http://localhost:8481/resource/async.txt'
+                options: {
+                    wait_request: 'http://localhost:8481/resource/async.txt'
                 },
                 files: {
                     'tmp/async.html': 'test/fixtures/async.html'
                 }
             },
-            multi_file:{
-                files:{
+            multi_file: {
+                files: {
                     'tmp/multi_file1.html': ['test/fixtures/simple.html'],
                     'tmp/multi_file2.html': ['test/fixtures/simple2.html']
+                }
+            },
+            query_string: {
+                options: {
+                    query_string: 'code=1'
+                },
+                files: {
+                    'tmp/query_string.html': 'test/fixtures/query_string.html'
                 }
             }
         },
