@@ -14,10 +14,11 @@ module.exports = function (grunt) {
     var _ = require('underscore');
 
     grunt.registerMultiTask('staticfy', 'Staticfy your website', function () {
-        var inject_script;
+        var inject_script, options, gruntDone;
+
         // Merge task-specific and/or target-specific options with these defaults.
-        var gruntDone = _.after(this.files.length, grunt.task.current.async());
-        var options = this.options({
+        gruntDone = _.after(this.files.length, grunt.task.current.async());
+        options = this.options({
             server_host: 'http://localhost',
             server_port: 8481,
             query_string: '',
@@ -60,6 +61,7 @@ module.exports = function (grunt) {
             url = options.server_host + ':' + (options.server_port + i) + '/' + basePath;
             if (options.query_string) url += '?' + options.query_string;
 
+            // call phantom
             phantom(url, file.dest, inject_script, options.wait_request, function () {
 
                 // After phantom, read the dest html file then normalizelf and make some changes.
@@ -81,9 +83,17 @@ module.exports = function (grunt) {
 
     // Staticfy the page using phantomjs.
     function phantom(url, dest, inject_script, wait_request, callback) {
-        var phantomProgram = path.join(__dirname, '/phantom/staticfy_url.js');
-        var cmd = 'phantomjs "' + phantomProgram + '" ' + url +
-            ' ' + dest + ' "' + inject_script + '" ' + wait_request;
+        var phantomProgram, cmd;
+
+        phantomProgram = path.join(__dirname, '/phantom/savePage.js');
+
+        cmd = 'phantomjs "'
+        + phantomProgram + '" '
+        + url + ' '
+        + dest + ' "'
+        + inject_script + '" '
+        + wait_request;
+
         exec(cmd, callback);
         //grunt.log.writeln(cmd);
     }
