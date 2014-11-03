@@ -14,7 +14,7 @@ module.exports = function (grunt) {
     var _ = require('underscore');
 
     grunt.registerMultiTask('staticfy', 'Staticfy your website', function () {
-        var inject_script, options, gruntDone;
+        var injectScript, options, gruntDone;
 
         // Merge task-specific and/or target-specific options with these defaults.
         gruntDone = _.after(this.files.length, grunt.task.current.async());
@@ -34,10 +34,12 @@ module.exports = function (grunt) {
 
         // Convert to string, it would be used by phantomjs later.
         if (grunt.util.kindOf(options.inject_script) === 'function') {
-            inject_script = options.inject_script
+            injectScript = options.inject_script
                 .toString()
                 .replace(/(function \(\) \{([\w\W]*?)\})/, "$2")
                 .trim();
+        } else {
+            injectScript = options.inject_script;
         }
 
         _.each(this.files, function (file, i) {
@@ -62,7 +64,7 @@ module.exports = function (grunt) {
             if (options.query_string) url += '?' + options.query_string;
 
             // call phantom
-            phantom(url, file.dest, inject_script, options.wait_request, function () {
+            phantom(url, file.dest, injectScript, options.wait_request, function () {
 
                 // After phantom, read the dest html file then normalizelf and make some changes.
                 var str = grunt.file.read(file.dest);
@@ -95,6 +97,6 @@ module.exports = function (grunt) {
         + wait_request;
 
         exec(cmd, callback);
-        //grunt.log.writeln(cmd);
+        grunt.log.writeln(cmd);
     }
 };
