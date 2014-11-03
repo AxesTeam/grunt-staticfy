@@ -12,7 +12,6 @@ module.exports = function (grunt) {
     var exec = require('child_process').exec;
     var path = require('path');
     var _ = require('underscore');
-    var async = require('async');
 
     grunt.registerMultiTask('staticfy', 'Staticfy your website', function () {
         // Merge task-specific and/or target-specific options with these defaults.
@@ -39,49 +38,46 @@ module.exports = function (grunt) {
                 .trim();
         }
 
-        var q = [];
-        _.each(this.files, function (file) {
-            q.push(function (callback) {
-                var fileSrc = file.src[0];
-                var wwwDir = options.cwd || path.dirname(fileSrc);
-                var fileBasePath = fileSrc.replace(wwwDir + '/', '');
-                grunt.log.writeln('fileBasePath:' + fileBasePath);
-                grunt.log.writeln('wwwDir:' + wwwDir);
+        _.each(this.files, function (file, i) {
+            var fileSrc = file.src[0];
+            var wwwDir = options.cwd || path.dirname(fileSrc);
+            var fileBasePath = fileSrc.replace(wwwDir, '').replace(/\/$/, '');
+            grunt.log.writeln('File "' + fileBasePath + '" staticfying.');
 
-                if (!grunt.file.exists(fileSrc)) {
-                    // File not exist
-                    grunt.log.warn('Source file "' + fileSrc + '" not found.');
-                    return;
-                }
+            if (!grunt.file.exists(fileSrc)) {
+                // File not exist
+                grunt.log.warn('Source file "' + fileSrc + '" not found.');
+                return;
+            }
 
-                // Run a server to serve html files, we need a static server so we
-                // wouldn't got a crossdomain error if the page use ajax or etc.
-                var server = SimpleServer.start(wwwDir, options.server_port);
+            // Run a server to serve html files, we need a static server so we
+            // wouldn't got a crossdomain error if the page use ajax or etc.
+            var server = SimpleServer.start(wwwDir, options.server_port + i);
 
-                var url = options.server_host + ':' + options.server_port
-                    + '/' + fileBasePath + '?' + options.query_string;
+            var url = options.server_host + ':' + (options.server_port + i)
+                + '/' + fileBasePath;
 
-                phantom(url, file.dest, options.inject_script, options.wait_request, function () {
+            if (options.query_string) url += '?' + options.query_string;
 
-                    // After phantom, read the dest html file then normalizelf and make some changes.
-                    var str = grunt.file.read(file.dest);
-                    str = grunt.util.normalizelf(str);
-                    str = options.onfinish(str);
 
-                    // Write the result
-                    grunt.file.write(file.dest, str);
-                    grunt.log.writeln('File "' + file.dest + '" created.');
+            phantom(url, file.dest, options.inject_script, options.wait_request, function () {
 
-                    // Tells Grunt that an async task is complete
-                    gruntDone();
+                // After phantom, read the dest html file then normalizelf and make some changes.
+                var str = grunt.file.read(file.dest);
+                str = grunt.util.normalizelf(str);
+                str = options.onfinish(str);
 
-                    // Close the static Server
-                    server.close();
-                    callback();
-                });
+                // Write the result
+                grunt.file.write(file.dest, str);
+                grunt.log.writeln('File "' + file.dest + '" created.');
+
+                // Close the static Server
+                server.close();
+
+                // Tells Grunt that an async task is complete
+                gruntDone();
             });
         });
-        async.series(q);
     });
 
     // Staticfy the page using phantomjs.
@@ -90,6 +86,6 @@ module.exports = function (grunt) {
         var cmd = 'phantomjs "' + phantomProgram + '" ' + url +
             ' ' + dest + ' "' + inject_script + '" ' + wait_request;
         exec(cmd, callback);
-        grunt.log.writeln(cmd);
+        //grunt.log.writeln(cmd);
     }
 };

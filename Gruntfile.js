@@ -71,7 +71,7 @@ module.exports = function (grunt) {
             },
             async: {
                 options: {
-                    wait_request: 'http://localhost:8481/resource/async.txt'
+                    wait_request: '/resource/async.txt'
                 },
                 files: {
                     'tmp/async.html': 'test/fixtures/async.html'
@@ -108,19 +108,19 @@ module.exports = function (grunt) {
         }
     });
 
-// Actually load this plugin's task(s).
+    // Actually load this plugin's task(s).
     grunt.loadTasks('tasks');
 
-// These plugins provide necessary tasks.
+    // These plugins provide necessary tasks.
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-nodeunit');
 
-// Whenever the "test" task is run, first clean the "tmp" dir, then run this
-// plugin's task(s), then test the result.
+    // Whenever the "test" task is run, first clean the "tmp" dir, then run this
+    // plugin's task(s), then test the result.
     grunt.registerTask('test', ['clean', 'staticfy', 'nodeunit']);
 
-// By default, lint and run all tests.
+    // By default, lint and run all tests.
     grunt.registerTask('default', ['test']);
 }
 ;
