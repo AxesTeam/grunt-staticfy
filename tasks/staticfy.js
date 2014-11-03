@@ -8,7 +8,7 @@
 "use strict";
 
 module.exports = function (grunt) {
-    var SimpleServer = require('./simpleServer.js');
+    var SimpleServer = require('./lib/simpleServer.js');
     var exec = require('child_process').exec;
     var path = require('path');
     var _ = require('underscore');
@@ -87,7 +87,7 @@ module.exports = function (grunt) {
     function phantom(url, dest, injectScript, waitRequest, callback) {
         var phantomProgram, cmd;
 
-        phantomProgram = path.join(__dirname, '/phantom/savePage.js');
+        phantomProgram = path.join(__dirname, '/lib/phantom/savePage.js');
 
         cmd = 'phantomjs "'
         + phantomProgram + '" '
@@ -97,6 +97,6 @@ module.exports = function (grunt) {
         + waitRequest;
 
         exec(cmd, callback);
-        grunt.log.writeln(cmd);
+        // grunt.log.writeln(cmd);
     }
 };
