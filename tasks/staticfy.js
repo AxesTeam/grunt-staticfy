@@ -84,7 +84,7 @@ module.exports = function (grunt) {
     });
 
     // Staticfy the page using phantomjs.
-    function phantom(url, dest, inject_script, wait_request, callback) {
+    function phantom(url, dest, injectScript, waitRequest, callback) {
         var phantomProgram, cmd;
 
         phantomProgram = path.join(__dirname, '/phantom/savePage.js');
@@ -93,8 +93,8 @@ module.exports = function (grunt) {
         + phantomProgram + '" '
         + url + ' '
         + dest + ' "'
-        + inject_script + '" '
-        + wait_request;
+        + injectScript + '" '
+        + waitRequest;
 
         exec(cmd, callback);
         grunt.log.writeln(cmd);
