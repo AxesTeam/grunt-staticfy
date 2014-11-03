@@ -24,7 +24,6 @@ module.exports = function (grunt) {
             query_string: '',
             cwd: '',
             inject_script: function () {
-
             },
             onfinish: function (str) {
                 return str;
@@ -43,11 +42,14 @@ module.exports = function (grunt) {
         }
 
         _.each(this.files, function (file, i) {
-            var src, wwwDir, basePath, server, url;
+            var src, wwwDir, basePath, server, url, host, port, queryString;
 
             src = file.src[0];
             wwwDir = options.cwd || path.dirname(src);
+            host = options.server_host;
+            port = options.server_port + i;
             basePath = src.replace(wwwDir, '').replace(/\/$/, '');
+            queryString = options.query_string;
             grunt.log.writeln('File "' + basePath + '" staticfying.');
 
             if (!grunt.file.exists(src)) {
@@ -58,10 +60,10 @@ module.exports = function (grunt) {
 
             // Run a server to serve html files, we need a static server so we
             // wouldn't got a crossdomain error if the page use ajax or etc.
-            server = SimpleServer.start(wwwDir, options.server_port + i);
+            server = SimpleServer.start(wwwDir, port);
 
-            url = options.server_host + ':' + (options.server_port + i) + '/' + basePath;
-            if (options.query_string) url += '?' + options.query_string;
+            url = host + ':' + port + '/' + basePath;
+            if (queryString) url += '?' + queryString;
 
             // call phantom
             phantom(url, file.dest, injectScript, options.wait_request, function () {
