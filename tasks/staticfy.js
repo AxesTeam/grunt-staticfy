@@ -50,6 +50,7 @@ module.exports = function (grunt) {
             port = options.server_port + i;
             basePath = src.replace(wwwDir, '').replace(/\/$/, '');
             queryString = options.query_string;
+
             grunt.log.writeln('File "' + basePath + '" staticfying.');
 
             if (!grunt.file.exists(src)) {
