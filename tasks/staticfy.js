@@ -19,8 +19,6 @@ module.exports = function (grunt) {
         // Merge task-specific and/or target-specific options with these defaults.
         gruntDone = _.after(this.files.length, grunt.task.current.async());
         options = this.options({
-            server_host: 'http://localhost',
-            server_port: 8481,
             query_string: '',
             cwd: '',
             inject_script: function () {
@@ -41,13 +39,11 @@ module.exports = function (grunt) {
             injectScript = options.inject_script;
         }
 
-        _.each(this.files, function (file, i) {
-            var src, wwwDir, basePath, server, url, host, port, queryString;
+        _.each(this.files, function (file) {
+            var src, wwwDir, basePath, url, queryString;
 
             src = file.src[0];
             wwwDir = options.cwd || path.dirname(src);
-            host = options.server_host;
-            port = options.server_port + i;
             basePath = src.replace(wwwDir, '').replace(/\/$/, '');
             queryString = options.query_string;
 
@@ -61,27 +57,27 @@ module.exports = function (grunt) {
 
             // Run a server to serve html files, we need a static server so we
             // wouldn't got a crossdomain error if the page use ajax or etc.
-            server = SimpleServer.start(wwwDir, port);
+            SimpleServer.start(wwwDir, function (server) {
+                url = 'http://localhost:' + server.port + '/' + basePath;
+                if (queryString) url += '?' + queryString;
 
-            url = host + ':' + port + '/' + basePath;
-            if (queryString) url += '?' + queryString;
+                // call phantom
+                phantom(url, file.dest, injectScript, options.wait_request, function () {
 
-            // call phantom
-            phantom(url, file.dest, injectScript, options.wait_request, function () {
+                    // After phantom, read the dest html file then normalizelf and make some changes.
+                    var str = grunt.file.read(file.dest);
+                    str = grunt.util.normalizelf(str);
+                    str = options.onfinish(str);
+                    grunt.file.write(file.dest, str);
 
-                // After phantom, read the dest html file then normalizelf and make some changes.
-                var str = grunt.file.read(file.dest);
-                str = grunt.util.normalizelf(str);
-                str = options.onfinish(str);
-                grunt.file.write(file.dest, str);
+                    grunt.log.writeln('File "' + file.dest + '" created.');
 
-                grunt.log.writeln('File "' + file.dest + '" created.');
+                    // Close the static Server
+                    server.close();
 
-                // Close the static Server
-                server.close();
-
-                // Tells Grunt that an async task is complete
-                gruntDone();
+                    // Tells Grunt that an async task is complete
+                    gruntDone();
+                });
             });
         });
     });
