@@ -21,8 +21,7 @@ module.exports = function (grunt) {
         options = this.options({
             query_string: '',
             cwd: '',
-            inject_script: function () {
-            },
+            inject_script: '',
             onfinish: function (str) {
                 return str;
             },
