@@ -37,10 +37,6 @@ grunt.initConfig({
 
 ### Options
 
-#### options.server_host
-Type: `String`
-Default value: `'http://localhost'`
-
 #### options.inject_script
 Type: `function`
 Default value: `function(){}`
@@ -209,6 +205,12 @@ this will not be remove
 
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
+
+1. Fork it
+2. Create your feature branch (`git checkout -b my-new-feature`)
+3. Commit your changes (`git commit -am 'Add some feature'`)
+4. Push to the branch (`git push origin my-new-feature`)
+5. Create new Pull Request
 
 ## Release History
 _(Nothing yet)_
