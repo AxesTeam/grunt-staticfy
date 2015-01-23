@@ -6,7 +6,7 @@
   "author": "Weilao <qqq123026689@126.com> (https://github.com/weilao)",
   "repository": {
     "type": "git",
-    "url": "git://gitbub.com/AxesTeam/grunt-staticfy.git"
+    "url": "git://github.com/AxesTeam/grunt-staticfy.git"
   },
   "bugs": {
     "url": "https://github.com/AxesTeam/grunt-staticfy/issues"
