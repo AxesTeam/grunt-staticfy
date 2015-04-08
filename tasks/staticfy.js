@@ -14,10 +14,10 @@ module.exports = function (grunt) {
     var _ = require('underscore');
 
     grunt.registerMultiTask('staticfy', 'Staticfy your website', function () {
-        var injectScript, options, gruntDone;
+        var injectScript, options, gruntDone, fakeFiles;
 
+        gruntDone = grunt.task.current.async();
         // Merge task-specific and/or target-specific options with these defaults.
-        gruntDone = _.after(this.files.length, grunt.task.current.async());
         options = this.options({
             query_string: '',
             cwd: '',
@@ -38,13 +38,12 @@ module.exports = function (grunt) {
             injectScript = options.inject_script;
         }
 
-        _.each(this.files, function (file) {
-            var src, wwwDir, basePath, url, queryString;
+        fakeFiles = _.map(this.files, function (file) {
+            var src, wwwDir, basePath;
 
             src = file.src[0];
             wwwDir = options.cwd || path.dirname(src);
-            basePath = src.replace(wwwDir, '').replace(/\/$/, '');
-            queryString = options.query_string;
+            basePath = src.replace(wwwDir, '').replace(/(^\/|\/$)/g, '');
 
             grunt.log.writeln('File "' + basePath + '" staticfying.');
 
@@ -54,47 +53,60 @@ module.exports = function (grunt) {
                 return;
             }
 
+            var url, queryString;
+            queryString = options.query_string;
+            url = 'http://localhost:{{port}}/' + basePath;
+            if (queryString) url += '?' + queryString;
+
+            return {
+                src: src,
+                dest: file.dest,
+                wwwDir: wwwDir,
+                url: url
+            };
+        });
+
+        _.each(_.groupBy(fakeFiles, 'wwwDir'), function (files, wwwDir) {
+            var fileCountUnderThisServer = fakeFiles.length;
+
             // Run a server to serve html files, we need a static server so we
             // wouldn't got a crossdomain error if the page use ajax or etc.
             SimpleServer.start(wwwDir, function (server) {
-                url = 'http://localhost:' + server.port + '/' + basePath;
-                if (queryString) url += '?' + queryString;
+                // Replace {{port}} with server.port
+                files = _.each(files, function (opt) {
+                    opt.url = opt.url.replace('{{port}}', server.port);
+                });
 
-                // call phantom
-                phantom(url, file.dest, injectScript, options.wait_request, function () {
-
-                    // After phantom, read the dest html file then normalizelf and make some changes.
-                    var str = grunt.file.read(file.dest);
-                    str = grunt.util.normalizelf(str);
-                    str = options.onfinish(str);
-                    grunt.file.write(file.dest, str);
-
-                    grunt.log.writeln('File "' + file.dest + '" created.');
-
-                    // Close the static Server
-                    server.close();
-
-                    // Tells Grunt that an async task is complete
-                    gruntDone();
+                // Call phantom/savePage.js
+                phantom(files, injectScript, options.wait_request, function () {
+                    _.each(files, function (file) {
+                        // After phantom, read the dest html file then normalizelf() and apply onfinish() callback.
+                        var str = grunt.file.read(file.dest);
+                        str = grunt.util.normalizelf(str);
+                        str = options.onfinish(str);
+                        grunt.file.write(file.dest, str);
+                        grunt.log.writeln('File "' + file.dest + '" created.');
+                    });
+                    fileCountUnderThisServer--;
+                    if (fileCountUnderThisServer === 0) {
+                        gruntDone();
+                    }
                 });
             });
         });
     });
 
-    // Staticfy the page using phantomjs.
-    function phantom(url, dest, injectScript, waitRequest, callback) {
+    function phantom(files, injectScript, waitRequest, callback) {
         var phantomProgram, cmd;
 
         phantomProgram = path.join(__dirname, '/lib/phantom/savePage.js');
 
         cmd = 'phantomjs "'
-        + phantomProgram + '" '
-        + url + ' '
-        + dest + ' "'
+        + phantomProgram + '" "'
+        + escape(JSON.stringify(files)) + '" "'
         + injectScript + '" '
         + waitRequest;
-
         exec(cmd, callback);
-        // grunt.log.writeln(cmd);
+        grunt.log.writeln(cmd);
     }
 };
