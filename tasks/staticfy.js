@@ -66,8 +66,9 @@ module.exports = function (grunt) {
             };
         });
 
-        _.each(_.groupBy(fakeFiles, 'wwwDir'), function (files, wwwDir) {
-            var fileCountUnderThisServer = fakeFiles.length;
+        var fileGroups = _.groupBy(fakeFiles, 'wwwDir');
+        var restGroupCount = _.size(fileGroups);
+        _.each(fileGroups, function (files, wwwDir) {
 
             // Run a server to serve html files, we need a static server so we
             // wouldn't got a crossdomain error if the page use ajax or etc.
