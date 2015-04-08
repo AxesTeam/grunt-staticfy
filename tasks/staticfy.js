@@ -107,6 +107,6 @@ module.exports = function (grunt) {
         + injectScript + '" '
         + waitRequest;
         exec(cmd, callback);
-        grunt.log.writeln(cmd);
+        // grunt.log.writeln(cmd);
     }
 };
